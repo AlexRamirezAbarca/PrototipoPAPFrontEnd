@@ -1,0 +1,19 @@
+<div class="container mt-4 px-6">
+  <h2 class="text-2xl font-semibold mb-4">Catálogos</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <a
+      *ngFor="let cat of catalogos"
+      [routerLink]="cat.enlace"
+      class="relative rounded overflow-hidden shadow cursor-pointer transform hover:-translate-y-1 transition"
+    >
+      <img [src]="cat.imagen" alt="{{ cat.nombre }}" class="w-full h-[150px] object-cover" />
+      <div class="absolute inset-0 bg-[#00438399] z-10"></div>
+      <div
+        class="absolute inset-0 flex items-center justify-center text-white font-bold text-center px-2 z-20"
+      >
+        {{ cat.nombre }}
+      </div>
+    </a>
+  </div>
+</div>
