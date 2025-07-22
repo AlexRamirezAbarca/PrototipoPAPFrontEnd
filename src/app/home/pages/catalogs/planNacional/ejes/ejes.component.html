@@ -4,11 +4,11 @@
       Ejes Plan Nacional de Desarrollo
     </h2>
     <button
-  (click)="openModal()"
-  class="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-700"
->
-  + Crear nuevo eje
-</button>
+      (click)="openModal()"
+      class="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-700"
+    >
+      + Crear nuevo eje
+    </button>
   </div>
 
   <div class="overflow-x-auto">
@@ -53,7 +53,6 @@
               >
                 <i class="fas fa-pen"></i> Editar
               </button>
-
               <button
                 class="flex items-center gap-1 bg-red-100 hover:bg-red-200 text-red-800 font-semibold py-1 px-2 rounded-full text-sm"
                 (click)="eliminarEje(eje)"
@@ -101,7 +100,9 @@
       />
     </div>
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+      <label class="block text-sm font-medium text-gray-700 mb-1"
+        >Descripción</label
+      >
       <textarea
         [(ngModel)]="newEje.descripcion"
         rows="3"
@@ -116,12 +117,21 @@
         Cancelar
       </button>
       <button
-        (click)="createEje()"
+        (click)="createOrUpdateEje()"
         class="px-4 py-2 rounded bg-blue-800 text-white hover:bg-blue-700"
       >
-        Guardar
+        {{ isEditing ? "Actualizar" : "Guardar" }}
       </button>
     </div>
   </div>
 </div>
 
+
+<app-confirm-modal
+  *ngIf="showConfirmModal"
+  [message]="'¿Estás seguro de eliminar este eje?'"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()">
+</app-confirm-modal>
+
+<app-loader *ngIf="loading"></app-loader>

@@ -3,17 +3,20 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CreateEjePnRequest } from '../../../../models/eje-pn.model';
+import { CreateEjePnRequest, EjePn } from '../../../../models/eje-pn.model';
 import { EjePnService } from '../../services/eje-pn.service';
+import { LoaderComponent } from '../../../../../../shared/components/loader/pages/loader.component';
+import { ConfirmModalComponent } from '../../../../../../shared/components/modals/pages/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-ejes',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule,  LoaderComponent, ConfirmModalComponent],
   templateUrl: './ejes.component.html',
   styleUrls: ['./ejes.component.css'],
 })
 export class EjesComponent implements OnInit {
+
   ejes: any[] = [];
   currentPage = 1;
   pageSize = 10;
@@ -24,7 +27,15 @@ export class EjesComponent implements OnInit {
     descripcion: '',
   };
 
-  showModal = false; // Por si luego lo usas
+  showModal = false;
+
+  isEditing = false;
+  selectedEjeId: number | null = null;
+
+  loading = false;
+  showConfirmModal = false;
+  ejeToDelete: EjePn | null = null;
+
 
   constructor(private http: HttpClient, private ejePnService: EjePnService) {}
 
@@ -32,46 +43,23 @@ export class EjesComponent implements OnInit {
     this.loadEjes();
   }
 
-  createEje(): void {
-  if (!this.newEje.nombre || !this.newEje.descripcion) {
-    alert('Debe ingresar nombre y descripción');
-    return;
-  }
-
-  this.ejePnService.createEje(this.newEje).subscribe({
-    next: (response) => {
-      console.log('Eje creado correctamente', response.data);
-      this.loadEjes(); // Recarga la tabla
-      this.newEje = { nombre: '', descripcion: '' }; // Limpia formulario
-      this.showModal = false; // Cierra modal si aplica
-    },
-    error: (err) => {
-      console.error('Error al crear eje', err);
-      alert('Error al crear eje');
-    }
-  });
-}
-
-
   loadEjes(): void {
-    const params = new HttpParams()
-      .set('page', this.currentPage)
-      .set('pageSize', this.pageSize);
-
-    this.http
-      .get<any>('http://localhost:5034/api/ejes/paginated', { params })
-      .subscribe({
-        next: (response) => {
-          const data = response.data;
-          this.ejes = data.data;
-          this.currentPage = data.currentPage;
-          this.pageSize = data.pageSize;
-          this.totalPages = data.totalPages;
-        },
-        error: (err) => {
-          console.error('Error al obtener ejes paginados', err);
-        },
-      });
+    this.loading = true;
+    this.ejePnService.getPaginated(this.currentPage, this.pageSize).subscribe({
+      next: (response) => {
+        const data = response.data;
+        this.ejes = data.data;
+        this.currentPage = data.currentPage;
+        this.pageSize = data.pageSize;
+        this.totalPages = data.totalPages;
+      },
+      error: (err) => {
+        console.error('Error al obtener ejes paginados', err);
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
   }
 
   previousPage(): void {
@@ -88,22 +76,83 @@ export class EjesComponent implements OnInit {
     }
   }
 
-  editarEje(eje: any): void {
-    console.log('Editar:', eje);
-    // Abre modal o navega a ruta de edición
-  }
-
-  eliminarEje(eje: any): void {
-    console.log('Eliminar:', eje);
-    // Confirmación y lógica de eliminación
-  }
-
   openModal(): void {
-  this.showModal = true;
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.isEditing = false;
+    this.selectedEjeId = null;
+    this.newEje = { nombre: '', descripcion: '' };
+  }
+
+  editarEje(eje: EjePn): void {
+    this.selectedEjeId = eje.ejePnId;
+    this.newEje = {
+      nombre: eje.nombre,
+      descripcion: eje.descripcion,
+    };
+    this.isEditing = true;
+    this.showModal = true;
+  }
+
+  eliminarEje(eje: EjePn): void {
+    this.ejeToDelete = eje;
+    this.showConfirmModal = true;
+  }
+
+  confirmDelete(): void {
+  if (!this.ejeToDelete) return;
+
+  this.loading = true;
+
+  const start = Date.now();
+
+  this.ejePnService.delete(this.ejeToDelete.ejePnId).subscribe({
+    next: () => {
+      this.loadEjes();
+    },
+    error: (err) => {
+      console.error('Error al eliminar eje', err);
+    },
+    complete: () => {
+      const elapsed = Date.now() - start;
+      const delay = Math.max(1000 - elapsed, 0); // espera mínimo 1 segundo
+
+      setTimeout(() => {
+        this.loading = false;
+        this.ejeToDelete = null;
+        this.showConfirmModal = false;
+      }, delay);
+    }
+  });
 }
 
-closeModal(): void {
-  this.showModal = false;
-}
+  cancelDelete(): void {
+    this.ejeToDelete = null;
+    this.showConfirmModal = false;
+  }
 
+  createOrUpdateEje(): void {
+    if (!this.newEje.nombre || !this.newEje.descripcion) return;
+
+    this.loading = true;
+    const request$ = this.isEditing && this.selectedEjeId !== null
+      ? this.ejePnService.update(this.selectedEjeId, this.newEje)
+      : this.ejePnService.createEje(this.newEje);
+
+    request$.subscribe({
+      next: (response) => {
+        this.loadEjes();
+        this.closeModal();
+      },
+      error: (err) => {
+        console.error('Error al guardar eje', err);
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
+  }
 }
