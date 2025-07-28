@@ -4,6 +4,7 @@ import { LayoutComponent } from '../shared/components/layout/pages/layout.compon
 import { CatalogsComponent } from './home/pages/catalogs/pages/catalogs.component';
 import { EjesComponent } from './home/pages/catalogs/planNacional/ejes/ejes.component';
 import { WelcomeComponent } from './home/pages/welcome/pages/welcome.component';
+import { ObjetivosComponent } from './home/pages/catalogs/planNacional/objetivos/objetivos.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -14,10 +15,8 @@ export const routes: Routes = [
     children: [
       { path: 'home', component: WelcomeComponent },
       { path: 'catalogos', component: CatalogsComponent },
-      {
-        path: 'ejes',
-        component: EjesComponent,
-      },
+      { path: 'ejes', component: EjesComponent },
+      { path: 'objetivos', component: ObjetivosComponent },
     ],
   },
 ];
