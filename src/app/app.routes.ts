@@ -6,6 +6,7 @@ import { EjesComponent } from './home/pages/catalogs/planNacional/ejes/ejes.comp
 import { WelcomeComponent } from './home/pages/welcome/pages/welcome.component';
 import { ObjetivosComponent } from './home/pages/catalogs/planNacional/objetivos/objetivos.component';
 import { PoliticasComponent } from './home/pages/catalogs/planNacional/politicas/politicas.component';
+import { MetasComponent } from './home/pages/catalogs/planNacional/metas/metas.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'ejes', component: EjesComponent },
       { path: 'objetivos', component: ObjetivosComponent },
        { path: 'politicas', component: PoliticasComponent },
+       { path: 'metas', component: MetasComponent },
     ],
   },
 ];
