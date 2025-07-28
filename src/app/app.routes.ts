@@ -7,6 +7,7 @@ import { WelcomeComponent } from './home/pages/welcome/pages/welcome.component';
 import { ObjetivosComponent } from './home/pages/catalogs/planNacional/objetivos/objetivos.component';
 import { PoliticasComponent } from './home/pages/catalogs/planNacional/politicas/politicas.component';
 import { MetasComponent } from './home/pages/catalogs/planNacional/metas/metas.component';
+import { MantenedoresComponent } from './home/pages/catalogs/planNacional/mantenedores/mantenedores.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,6 +22,10 @@ export const routes: Routes = [
       { path: 'objetivos', component: ObjetivosComponent },
        { path: 'politicas', component: PoliticasComponent },
        { path: 'metas', component: MetasComponent },
+       {
+    path: 'mantenedores',
+    component: MantenedoresComponent
+  }
     ],
   },
 ];
