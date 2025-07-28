@@ -1,22 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CreateEjePnRequest, EjePn } from '../../../../models/eje-pn.model';
 import { EjePnService } from '../../services/eje-pn.service';
 import { LoaderComponent } from '../../../../../../shared/components/loader/pages/loader.component';
 import { ConfirmModalComponent } from '../../../../../../shared/components/modals/pages/confirm-modal/confirm-modal.component';
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-ejes',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule,  LoaderComponent, ConfirmModalComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    LoaderComponent,
+    ConfirmModalComponent,
+  ],
   templateUrl: './ejes.component.html',
   styleUrls: ['./ejes.component.css'],
 })
 export class EjesComponent implements OnInit {
-
   ejes: any[] = [];
   currentPage = 1;
   pageSize = 10;
@@ -36,8 +41,12 @@ export class EjesComponent implements OnInit {
   showConfirmModal = false;
   ejeToDelete: EjePn | null = null;
 
-
-  constructor(private http: HttpClient, private ejePnService: EjePnService) {}
+  constructor(
+    private http: HttpClient,
+    private ejePnService: EjePnService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadEjes();
@@ -45,6 +54,8 @@ export class EjesComponent implements OnInit {
 
   loadEjes(): void {
     this.loading = true;
+    this.cdr.detectChanges();
+
     this.ejePnService.getPaginated(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         const data = response.data;
@@ -57,8 +68,11 @@ export class EjesComponent implements OnInit {
         console.error('Error al obtener ejes paginados', err);
       },
       complete: () => {
-        this.loading = false;
-      }
+        setTimeout(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        }, 300); // puedes dejar este en 300-500 ms para UX más suave
+      },
     });
   }
 
@@ -97,37 +111,45 @@ export class EjesComponent implements OnInit {
     this.showModal = true;
   }
 
+  goBack() {
+    this.router.navigate(['/catalogos']);
+  }
+
   eliminarEje(eje: EjePn): void {
     this.ejeToDelete = eje;
     this.showConfirmModal = true;
   }
 
   confirmDelete(): void {
-  if (!this.ejeToDelete) return;
+    if (!this.ejeToDelete) return;
 
-  this.loading = true;
+    this.loading = true;
+    this.cdr.detectChanges(); // 🔥 fuerza el render del loader
 
-  const start = Date.now();
+    const start = Date.now();
 
-  this.ejePnService.delete(this.ejeToDelete.ejePnId).subscribe({
-    next: () => {
-      this.loadEjes();
-    },
-    error: (err) => {
-      console.error('Error al eliminar eje', err);
-    },
-    complete: () => {
-      const elapsed = Date.now() - start;
-      const delay = Math.max(1000 - elapsed, 0); // espera mínimo 1 segundo
+    setTimeout(() => {
+      this.ejePnService.delete(this.ejeToDelete!.ejePnId).subscribe({
+        next: () => {
+          this.loadEjes();
+        },
+        error: (err) => {
+          console.error('Error al eliminar eje', err);
+        },
+        complete: () => {
+          const elapsed = Date.now() - start;
+          const delay = Math.max(1000 - elapsed, 0);
 
-      setTimeout(() => {
-        this.loading = false;
-        this.ejeToDelete = null;
-        this.showConfirmModal = false;
-      }, delay);
-    }
-  });
-}
+          setTimeout(() => {
+            this.loading = false;
+            this.ejeToDelete = null;
+            this.showConfirmModal = false;
+            this.cdr.detectChanges();
+          }, delay);
+        },
+      });
+    }, 0);
+  }
 
   cancelDelete(): void {
     this.ejeToDelete = null;
@@ -135,24 +157,40 @@ export class EjesComponent implements OnInit {
   }
 
   createOrUpdateEje(): void {
-    if (!this.newEje.nombre || !this.newEje.descripcion) return;
+    if (!this.newEje.nombre || !this.newEje.descripcion) {
+      alert('Debe ingresar nombre y descripción');
+      return;
+    }
 
     this.loading = true;
-    const request$ = this.isEditing && this.selectedEjeId !== null
-      ? this.ejePnService.update(this.selectedEjeId, this.newEje)
-      : this.ejePnService.createEje(this.newEje);
+    this.cdr.detectChanges(); // 🔥 renderiza el loader
 
-    request$.subscribe({
+    const start = Date.now();
+
+    const obs =
+      this.isEditing && this.selectedEjeId !== null
+        ? this.ejePnService.update(this.selectedEjeId, this.newEje)
+        : this.ejePnService.createEje(this.newEje);
+
+    obs.subscribe({
       next: (response) => {
+        alert(response.message);
         this.loadEjes();
-        this.closeModal();
       },
       error: (err) => {
         console.error('Error al guardar eje', err);
+        alert('Ocurrió un error al guardar el eje.');
       },
       complete: () => {
-        this.loading = false;
-      }
+        const elapsed = Date.now() - start;
+        const delay = Math.max(1000 - elapsed, 0);
+
+        setTimeout(() => {
+          this.loading = false;
+          this.closeModal();
+          this.cdr.detectChanges(); // 🔄 actualiza la vista final
+        }, delay);
+      },
     });
   }
 }
