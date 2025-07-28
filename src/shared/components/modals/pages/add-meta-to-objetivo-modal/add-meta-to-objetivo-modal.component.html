@@ -1,0 +1,27 @@
+<div *ngIf="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Relacionar Meta al Objetivo</h3>
+
+    <label class="block text-sm text-gray-600 mb-2">Selecciona una Meta:</label>
+    <select
+      [(ngModel)]="metaSeleccionadaId"
+      class="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring focus:border-blue-500"
+    >
+      <option [ngValue]="null">-- Selecciona una meta --</option>
+      <option *ngFor="let meta of metasDisponibles" [ngValue]="meta.metaPnId">
+        {{ meta.nombre }}
+      </option>
+    </select>
+
+    <div class="flex justify-end gap-3">
+      <button class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400" (click)="cerrar()">Cancelar</button>
+      <button
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        [disabled]="!metaSeleccionadaId"
+        (click)="guardarRelacion()"
+      >
+        Relacionar
+      </button>
+    </div>
+  </div>
+</div>

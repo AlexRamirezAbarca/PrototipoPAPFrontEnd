@@ -1,98 +1,123 @@
-<!-- Botón volver -->
-<button
-  class="mb-4 px-4 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 transition"
-  (click)="goBack()"
->
-  ← Volver a Catálogos
-</button>
+<!-- Botón principal: Crear nueva relación Eje - Objetivo -->
+<div class="flex justify-between items-center mb-6">
+  <button
+    class="px-4 py-2 bg-blue-700 text-white font-semibold rounded hover:bg-blue-800 transition"
+    (click)="abrirModalRelacion()"
+  >
+    + Crear nueva relación Eje - Objetivo
+  </button>
+</div>
 
-<!-- Botón crear nueva relación -->
-<button
-  class="mb-4 ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-  (click)="abrirModalRelacion()"
->
-  + Crear nueva relación Eje - Objetivo
-</button>
+<!-- Botones padres para relaciones independientes -->
+<div class="flex gap-4 mb-6">
+  <button
+    class="px-4 py-2 bg-green-700 text-white font-semibold rounded hover:bg-green-800 transition"
+    (click)="abrirModalObjetivoMeta()"
+  >
+    + Relacionar Meta con Objetivo
+  </button>
 
-<div class="p-6">
-  <h2 class="text-2xl font-bold mb-4">Relaciones del Plan Nacional de Desarrollo</h2>
+  <button
+    class="px-4 py-2 bg-purple-700 text-white font-semibold rounded hover:bg-purple-800 transition"
+    (click)="abrirModalObjetivoPolitica()"
+  >
+    + Relacionar Política con Objetivo
+  </button>
+</div>
 
-  <!-- Ejes agrupados -->
-  <div *ngFor="let grupo of ejesAgrupados" class="mb-6 border border-gray-300 rounded-xl p-4">
-    <!-- Header de Eje -->
+<!-- Título principal -->
+<h2 class="text-3xl font-bold text-blue-900 mb-6">Relaciones del Plan Nacional de Desarrollo</h2>
+
+<!-- Lista de relaciones Eje ⇄ Objetivo -->
+<div *ngFor="let grupo of ejesAgrupados" class="bg-white rounded-xl shadow-md border border-gray-200 mb-6 p-6">
+  <!-- Header de eje -->
+  <h3 class="text-xl font-semibold text-blue-900 mb-4">{{ grupo.eje.nombre }}</h3>
+
+  <!-- Objetivos dentro del eje -->
+  <div *ngFor="let obj of grupo.objetivos" class="border-l-4 border-blue-500 pl-4 py-4 ml-2 mb-4 bg-gray-50 rounded-md">
     <div class="flex justify-between items-center">
-      <h3 class="text-lg font-semibold text-blue-900">{{ grupo.eje.nombre }}</h3>
-      <button
-        (click)="abrirModal(grupo.eje.ejePnId)"
-        class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-      >
-        + Añadir Objetivo (Mock)
-      </button>
+      <p class="font-medium text-gray-800 text-base">📌 {{ obj.nombre }}</p>
+      <div class="flex gap-2">
+        <!-- Botón contextual para relacionar Meta -->
+        <button
+          (click)="abrirModalRelacionMeta(obj.objPnId)"
+          class="text-xs bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+        >
+          + Meta
+        </button>
+
+        <!-- Botón contextual para relacionar Política -->
+        <button
+          (click)="abrirModalRelacionPolitica(obj.objPnId)"
+          class="text-xs bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
+        >
+          + Política
+        </button>
+
+        <!-- Eliminar relación -->
+        <button
+          (click)="eliminarRelacionEjeObjetivo(obj.objPnId, grupo.eje.ejePnId)"
+          class="text-xs bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+        >
+          🗑 Eliminar Relación
+        </button>
+      </div>
     </div>
 
-    <!-- Objetivos del eje -->
-    <div *ngFor="let obj of grupo.objetivos" class="ml-4 mt-4">
-      <div class="flex justify-between items-center">
-        <p class="font-medium text-gray-700">📌 {{ obj.nombre }}</p>
-        <div class="flex gap-2">
-          <button
-            (click)="abrirMetaModal(obj.objPnId)"
-            class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-          >
-            + Añadir Meta
-          </button>
-          <button
-            (click)="abrirPoliticaModal(obj.objPnId)"
-            class="text-xs bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600"
-          >
-            + Añadir Política
-          </button>
-        </div>
-      </div>
+    <!-- Metas -->
+    <div class="mt-2 ml-2 text-sm text-green-700" *ngIf="obj.metas.length > 0">
+      <p class="font-semibold">🎯 Metas:</p>
+      <ul class="list-disc ml-5">
+        <li *ngFor="let meta of obj.metas" class="text-gray-700">{{ meta.nombre }}</li>
+      </ul>
+    </div>
 
-      <!-- Metas -->
-      <div class="ml-4 text-sm text-green-700" *ngIf="obj.metas.length > 0">
-        <p class="font-semibold">Metas:</p>
-        <ul class="list-disc ml-4">
-          <li *ngFor="let meta of obj.metas">{{ meta.nombre }}</li>
-        </ul>
-      </div>
-
-      <!-- Políticas -->
-      <div class="ml-4 text-sm text-purple-700" *ngIf="obj.politicas.length > 0">
-        <p class="font-semibold">Políticas:</p>
-        <ul class="list-disc ml-4">
-          <li *ngFor="let poli of obj.politicas">{{ poli.nombre }}</li>
-        </ul>
-      </div>
+    <!-- Políticas -->
+    <div class="mt-2 ml-2 text-sm text-purple-700" *ngIf="obj.politicas.length > 0">
+      <p class="font-semibold">📘 Políticas:</p>
+      <ul class="list-disc ml-5">
+        <li *ngFor="let poli of obj.politicas" class="text-gray-700">{{ poli.nombre }}</li>
+      </ul>
     </div>
   </div>
-
-  <!-- Modal Eje ⇄ Objetivo (Real) -->
-  <app-add-eje-objetivo-modal
-    [visible]="modalRelacionVisible"
-    (closed)="modalRelacionVisible = false"
-    (relacionCreada)="crearRelacionEjeObjetivo($event)"
-  />
-
-  <!-- Modal Objetivo (Mock - aún no funcional real) -->
-  <app-add-objetivo-modal
-    [visible]="modalVisible"
-    (closed)="cerrarModal()"
-    (objetivoCreado)="agregarObjetivo($event)"
-  />
-
-  <!-- Modal Meta -->
-  <app-add-meta-modal
-    [visible]="metaModalVisible"
-    (closed)="metaModalVisible = false"
-    (metaCreada)="agregarMeta($event)"
-  />
-
-  <!-- Modal Política -->
-  <app-add-politica-modal
-    [visible]="politicaModalVisible"
-    (closed)="politicaModalVisible = false"
-    (politicaCreada)="agregarPolitica($event)"
-  />
 </div>
+
+<!-- Modales existentes -->
+<app-add-eje-objetivo-modal
+  [visible]="modalRelacionVisible"
+  (closed)="modalRelacionVisible = false"
+  (relacionCreada)="crearRelacionEjeObjetivo($event)"
+></app-add-eje-objetivo-modal>
+
+<app-add-objetivo-modal
+  [visible]="modalVisible"
+  (closed)="cerrarModal()"
+  (objetivoCreado)="agregarObjetivo($event)"
+></app-add-objetivo-modal>
+
+<app-add-objetivo-meta-modal
+  [visible]="modalObjetivoMetaVisible"
+  (closed)="modalObjetivoMetaVisible = false"
+  (relacionCreada)="crearRelacionObjetivoMeta($event)"
+></app-add-objetivo-meta-modal>
+
+<app-add-objetivo-politica-modal
+  [visible]="modalObjetivoPoliticaVisible"
+  (closed)="modalObjetivoPoliticaVisible = false"
+  (relacionCreada)="crearRelacionObjetivoPolitica($event)"
+></app-add-objetivo-politica-modal>
+
+<!-- 🔥 Nuevos modales dinámicos con objPnId -->
+<app-add-meta-to-objetivo-modal
+  [visible]="modalMetaVisible"
+  [objPnId]="selectedObjPnId!"
+  (closed)="modalMetaVisible = false"
+  (relacionCreada)="actualizarRelaciones()"
+></app-add-meta-to-objetivo-modal>
+
+<app-add-politica-to-objetivo-modal
+  [visible]="modalPoliticaVisible"
+  [objPnId]="selectedObjPnId!"
+  (closed)="modalPoliticaVisible = false"
+  (relacionCreada)="actualizarRelaciones()"
+></app-add-politica-to-objetivo-modal>

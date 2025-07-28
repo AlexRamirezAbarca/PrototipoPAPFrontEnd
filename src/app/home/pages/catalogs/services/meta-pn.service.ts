@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GeneralResponse } from '../../../models/eje-pn.model';
-import { PaginatedResponse } from '../../../models/objetivo-pn.model';
-import { CreateMetaPnRequest, MetaPn } from '../../../models/meta-pn.model';
+
+
+import { CreateMetaPnRequest, GeneralResponse, MetaPn, PaginatedResponse } from '../../../models/meta-pn.model';
 
 
 @Injectable({
