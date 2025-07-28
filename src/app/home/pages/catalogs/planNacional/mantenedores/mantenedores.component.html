@@ -1,7 +1,17 @@
+<!-- Botón volver -->
 <button
   class="mb-4 px-4 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 transition"
-  (click)="goBack()">
+  (click)="goBack()"
+>
   ← Volver a Catálogos
+</button>
+
+<!-- Botón crear nueva relación -->
+<button
+  class="mb-4 ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+  (click)="abrirModalRelacion()"
+>
+  + Crear nueva relación Eje - Objetivo
 </button>
 
 <div class="p-6">
@@ -16,7 +26,7 @@
         (click)="abrirModal(grupo.eje.ejePnId)"
         class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
       >
-        + Añadir Objetivo
+        + Añadir Objetivo (Mock)
       </button>
     </div>
 
@@ -58,7 +68,14 @@
     </div>
   </div>
 
-  <!-- Modal Objetivo -->
+  <!-- Modal Eje ⇄ Objetivo (Real) -->
+  <app-add-eje-objetivo-modal
+    [visible]="modalRelacionVisible"
+    (closed)="modalRelacionVisible = false"
+    (relacionCreada)="crearRelacionEjeObjetivo($event)"
+  />
+
+  <!-- Modal Objetivo (Mock - aún no funcional real) -->
   <app-add-objetivo-modal
     [visible]="modalVisible"
     (closed)="cerrarModal()"
