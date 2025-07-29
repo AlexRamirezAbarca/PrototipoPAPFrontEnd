@@ -1,65 +1,123 @@
-<!-- sidebar.component.html -->
-<nav class="bg-[#004383] text-white h-full w-64 flex flex-col justify-between">
-  <!-- Parte superior: Logo + Título -->
-  <div class="p-4">
-    <div class="flex flex-col items-center space-y-2 mb-6">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/LogoUGcolor.png" alt="Logo UG" class="w-22 h-20 filter brightness-0 invert" />
-      <hr class="h-6">
-      <div class="text-center text-base font-semibold leading-tight">
-        Prototipo<br />GestionPAP
+<aside
+  class="hidden md:flex flex-col justify-between w-64 h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white shadow-xl">
+  <!-- HEADER RENOVADO -->
+  <div class="p-6 flex flex-col items-center">
+    <!-- Círculo blanco de fondo -->
+    <div class="bg-white p-2 rounded-full shadow-lg">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/6/6d/LogoUGcolor.png"
+        alt="Logo UG"
+        class="w-20 h-20 object-contain"
+      />
+    </div>
+    <!-- Título centrado y con espacio -->
+    <h1 class="mt-4 text-2xl font-extrabold text-center leading-tight">
+      Prototipo<br/>GestionPAP
+    </h1>
+
+    <br>
+    <br>
+    <!-- Menu -->
+    <nav>
+      <ul class="space-y-2">
+        <li>
+          <a
+            routerLink="/home"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-home group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Inicio</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/catalogos"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-th-large group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Catálogos</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/gestion"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-chart-bar group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Gestión</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/actividades"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-tasks group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Actividades</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/obras"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-tools group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Obras y Tareas</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/reportes"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-file-alt group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Reportes</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/auth"
+            routerLinkActive="bg-white bg-opacity-20 font-bold"
+            class="group flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition"
+          >
+            <i class="fas fa-key group-hover:text-white text-blue-300 w-5"></i>
+            <span class="text-lg">Autenticación</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- User Profile / Settings -->
+  <div class="px-6 py-4 bg-blue-950 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-blue-900 shadow">
+        AD
       </div>
+      <div class="text-base">Admin</div>
     </div>
-
-    <hr class="h-4">
-    <!-- Menú -->
-    <ul class="space-y-3 text-[15px]">
-      <li>
-        <a routerLink="/home" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-home"></i><span>Inicio</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/catalogos" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-th-large"></i><span>Catálogos</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/gestion" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-chart-bar"></i><span>Gestión</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/actividades" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-tasks"></i><span>Actividades</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/obras" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-tools"></i><span>Obras y Tareas</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/reportes" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-file-alt"></i><span>Reportes</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/auth" routerLinkActive="font-bold" class="flex items-center space-x-2">
-          <i class="fas fa-key"></i><span>Autenticación</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Parte inferior: Perfil -->
-  <div class="bg-[#003366] px-4 py-3 flex justify-between items-center text-sm w-full">
-    <div class="flex items-center space-x-2">
-      <div class="bg-white text-[#004383] font-bold rounded-full w-8 h-8 flex items-center justify-center">AD</div>
-      <span class="text-white">admin</span>
-    </div>
-    <div class="flex space-x-2">
-      <i class="fas fa-cog cursor-pointer"></i>
-      <i class="fas fa-sign-out-alt cursor-pointer"></i>
+    <div class="flex space-x-4 text-xl">
+      <button aria-label="Configuración" class="hover:text-blue-300 transition">
+        <i class="fas fa-cog"></i>
+      </button>
+      <button aria-label="Cerrar sesión" class="hover:text-blue-300 transition">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
     </div>
   </div>
-</nav>
+</aside>
+
+<!-- Botón de toggle para pantallas pequeñas -->
+<button
+  (click)="toggleSidebar()"
+  class="md:hidden fixed bottom-6 right-6 bg-blue-900 text-white p-4 rounded-full shadow-lg hover:bg-blue-800 transition"
+  aria-label="Abrir menú"
+>
+  <i class="fas fa-bars text-2xl"></i>
+</button>

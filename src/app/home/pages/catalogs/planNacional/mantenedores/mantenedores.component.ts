@@ -50,6 +50,11 @@ export class MantenedoresComponent implements OnInit {
   modalMetaVisible = false;
   modalPoliticaVisible = false;
 
+  // 🔁 Recarga desde backend
+currentPage = 1;
+pageSize = 10;
+totalPages = 1;
+
   constructor(
     private ejeObjetivoService: EjeObjetivoService,
     private router: Router,
@@ -182,4 +187,25 @@ export class MantenedoresComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/catalogos']);
   }
+
+  expandirRelacion(relacion: EjeObjetivoRelacion): any[] {
+  const metas = relacion.objetivo.metas || [];
+  const politicas = relacion.objetivo.politicas || [];
+
+  const maxLength = Math.max(metas.length, politicas.length, 1); // al menos 1 fila
+
+  const filas = [];
+  for (let i = 0; i < maxLength; i++) {
+    filas.push({
+      meta: metas[i],
+      politica: politicas[i],
+      primeraFilaEje: i === 0,
+      primeraFilaObjetivo: i === 0,
+      rowspanEje: maxLength,
+      rowspanObjetivo: maxLength
+    });
+  }
+
+  return filas;
+}
 }

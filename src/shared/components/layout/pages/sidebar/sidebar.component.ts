@@ -9,4 +9,12 @@ import { RouterModule } from '@angular/router';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  // 1. Estado del sidebar (cerrado en móvil por defecto)
+  isSidebarOpen = false;
+
+  // 2. Método para alternar
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+}
