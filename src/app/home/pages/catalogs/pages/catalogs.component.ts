@@ -9,12 +9,13 @@ import { RouterModule } from '@angular/router';
   templateUrl: './catalogs.component.html',
   styleUrls: ['./catalogs.component.css'],
 })
+// catalogs.component.ts → se mantendrá su selector pero lo renombras a Mantenimiento visualmente
 export class CatalogsComponent {
-  catalogos = [
-    { nombre: 'Ejes Plan Nacional Desarrollo', enlace: '/ejes', imagen: 'assets/banner.png' },
-    { nombre: 'Objetivos Plan Nacional Desarrollo', enlace: '/objetivos', imagen: 'assets/banner.png' },
-    { nombre: 'Políticas Plan Nacional Desarrollo', enlace: '/politicas', imagen: 'assets/banner.png' },
-    { nombre: 'Metas Plan Nacional Desarrollo', enlace: '/metas', imagen: 'assets/banner.png' },
-    { nombre: 'Relaciones Plan Nacional de Desarrollo', enlace: '/mantenedores', imagen: 'assets/banner.png' }
+  seccionesPrincipales = [
+    { nombre: 'Plan Nacional de Desarrollo', enlace: '/pnd', imagen: 'assets/banner.png' },
+    { nombre: 'Estructura Programática', enlace: '/estructura-programatica', imagen: 'assets/banner.png' },
+    { nombre: 'PEDI', enlace: '/pedi', imagen: 'assets/banner.png' }
   ];
 }
+
+

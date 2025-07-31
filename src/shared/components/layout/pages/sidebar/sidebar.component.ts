@@ -10,11 +10,14 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidebar.component.css'],
 })
 export class SidebarComponent {
-  // 1. Estado del sidebar (cerrado en móvil por defecto)
-  isSidebarOpen = false;
+ isSidebarOpen = false;
+  isMantenimientosOpen = false; // <- NUEVO
 
-  // 2. Método para alternar
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  toggleMantenimientos(): void {
+    this.isMantenimientosOpen = !this.isMantenimientosOpen;
   }
 }
