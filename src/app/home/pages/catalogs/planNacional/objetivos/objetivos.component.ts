@@ -9,6 +9,8 @@ import {
   CreateObjetivoPnRequest,
   Objetivo,
 } from '../../../../models/objetivo-pn.model';
+import { EjeObjetivoService } from '../../services/eje-objetivo.service';
+import { EjePnService } from '../../services/eje-pn.service';
 
 @Component({
   selector: 'app-objetivos',
@@ -42,42 +44,87 @@ export class ObjetivosComponent implements OnInit {
   showConfirmModal = false;
   objetivoToDelete: Objetivo | null = null;
 
+  ejesAgrupados: { eje: any; objetivos: any[] }[] = [];
+
+  ejesId: { ejePnId: number; nombre: string }[] = [];
+  selectedEjeId: number | null = null;
+
   constructor(
     private objetivoService: ObjetivoService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private ejeObjetivo: EjeObjetivoService,
+    private ejeService: EjePnService
   ) {}
 
   ngOnInit(): void {
     this.loadObjetivos();
+    this.ejeService.getPaginated(1, 100).subscribe((res) => {
+      this.ejesId = res.data.data;
+    });
   }
 
   goBack() {
     this.router.navigate(['/catalogos']);
   }
 
+  // loadObjetivos(): void {
+  //   this.loading = true;
+  //   this.cdr.detectChanges();
+
+  //   this.objetivoService
+  //     .getPaginated(this.currentPage, this.pageSize)
+  //     .subscribe({
+  //       next: (response) => {
+  //         const data = response.data;
+  //         this.objetivos = data.data;
+  //         this.currentPage = data.currentPage;
+  //         this.pageSize = data.pageSize;
+  //         this.totalPages = data.totalPages;
+  //       },
+  //       error: (err) => {
+  //         console.error('Error al obtener objetivos paginados', err);
+  //       },
+  //       complete: () => {
+  //         setTimeout(() => {
+  //           this.loading = false;
+  //           this.cdr.detectChanges();
+  //         }, 300);
+  //       },
+  //     });
+  // }
+
   loadObjetivos(): void {
     this.loading = true;
     this.cdr.detectChanges();
 
-    this.objetivoService
-      .getPaginated(this.currentPage, this.pageSize)
+    this.ejeObjetivo
+      .getRelacionesPaginadas(this.currentPage, this.pageSize)
       .subscribe({
-        next: (response) => {
-          const data = response.data;
-          this.objetivos = data.data;
+        next: (data) => {
           this.currentPage = data.currentPage;
           this.pageSize = data.pageSize;
           this.totalPages = data.totalPages;
-        },
-        error: (err) => {
-          console.error('Error al obtener objetivos paginados', err);
+
+          const agrupados: { [key: number]: { eje: any; objetivos: any[] } } =
+            {};
+          for (const relacion of data.data) {
+            const ejeId = relacion.eje.ejePnId;
+            if (!agrupados[ejeId]) {
+              agrupados[ejeId] = { eje: relacion.eje, objetivos: [] };
+            }
+            agrupados[ejeId].objetivos.push({
+              ...relacion.objetivo,
+              fechaCreacion: relacion.fechaCreacion,
+              estado: relacion.estado,
+            });
+          }
+
+          this.ejesAgrupados = Object.values(agrupados);
         },
         complete: () => {
-          setTimeout(() => {
-            this.loading = false;
-            this.cdr.detectChanges();
-          }, 300);
+          this.loading = false;
+          this.cdr.detectChanges();
         },
       });
   }
@@ -159,8 +206,12 @@ export class ObjetivosComponent implements OnInit {
   }
 
   createOrUpdateObjetivo(): void {
-    if (!this.newObjetivo.nombre || !this.newObjetivo.descripcion) {
-      alert('Debe ingresar nombre y descripción');
+    if (
+      !this.newObjetivo.nombre ||
+      !this.newObjetivo.descripcion ||
+      !this.selectedEjeId
+    ) {
+      alert('Debe completar todos los campos (incluyendo eje).');
       return;
     }
 
@@ -169,30 +220,65 @@ export class ObjetivosComponent implements OnInit {
 
     const start = Date.now();
 
-    const obs =
-      this.isEditing && this.selectedObjetivoId !== null
-        ? this.objetivoService.update(this.selectedObjetivoId, this.newObjetivo)
-        : this.objetivoService.create(this.newObjetivo);
+    if (this.isEditing && this.selectedObjetivoId !== null) {
+      // Modo edición normal
+      this.objetivoService
+        .update(this.selectedObjetivoId, this.newObjetivo)
+        .subscribe({
+          next: (response) => {
+            alert(response.message);
+            this.loadObjetivos();
+          },
+          error: (err) => {
+            console.error('Error al actualizar objetivo', err);
+            alert('Ocurrió un error al actualizar el objetivo.');
+          },
+          complete: () => {
+            this.finalizarOperacion(start);
+          },
+        });
+    } else {
+      // Modo creación con relación
+      this.objetivoService.create(this.newObjetivo).subscribe({
+        next: (response) => {
+          const objPnId = response.data.objPnId;
 
-    obs.subscribe({
-      next: (response) => {
-        alert(response.message);
-        this.loadObjetivos();
-      },
-      error: (err) => {
-        console.error('Error al guardar objetivo', err);
-        alert('Ocurrió un error al guardar el objetivo.');
-      },
-      complete: () => {
-        const elapsed = Date.now() - start;
-        const delay = Math.max(1000 - elapsed, 0);
+          // Crear relación eje ↔ objetivo
+          this.ejeObjetivo
+            .createRelacionEjeObjetivo({ ejePnId: this.selectedEjeId!, objPnId })
+            .subscribe({
+              next: () => {
+                alert('Objetivo y relación creados correctamente.');
+                this.loadObjetivos();
+              },
+              error: (err) => {
+                console.error('Error al crear relación eje-objetivo', err);
+                alert(
+                  'El objetivo fue creado, pero ocurrió un error al relacionarlo con el eje.'
+                );
+              },
+              complete: () => {
+                this.finalizarOperacion(start);
+              },
+            });
+        },
+        error: (err) => {
+          console.error('Error al crear objetivo', err);
+          alert('Ocurrió un error al crear el objetivo.');
+          this.finalizarOperacion(start);
+        },
+      });
+    }
+  }
 
-        setTimeout(() => {
-          this.loading = false;
-          this.closeModal();
-          this.cdr.detectChanges();
-        }, delay);
-      },
-    });
+  private finalizarOperacion(start: number) {
+    const elapsed = Date.now() - start;
+    const delay = Math.max(1000 - elapsed, 0);
+
+    setTimeout(() => {
+      this.loading = false;
+      this.closeModal();
+      this.cdr.detectChanges();
+    }, delay);
   }
 }

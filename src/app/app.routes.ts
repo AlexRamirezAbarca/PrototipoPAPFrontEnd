@@ -5,9 +5,10 @@ import { CatalogsComponent } from './home/pages/catalogs/pages/catalogs.componen
 import { EjesComponent } from './home/pages/catalogs/planNacional/ejes/ejes.component';
 import { WelcomeComponent } from './home/pages/welcome/pages/welcome.component';
 import { ObjetivosComponent } from './home/pages/catalogs/planNacional/objetivos/objetivos.component';
-import { PoliticasComponent } from './home/pages/catalogs/planNacional/politicas/politicas.component';
-import { MetasComponent } from './home/pages/catalogs/planNacional/metas/metas.component';
+// import { PoliticasComponent } from './home/pages/catalogs/planNacional/politicas/politicas.component';
+// import { MetasComponent } from './home/pages/catalogs/planNacional/metas/metas.component';
 import { MantenedoresComponent } from './home/pages/catalogs/planNacional/mantenedores/mantenedores.component';
+import { MetasPoliticasComponent } from './home/pages/catalogs/planNacional/metas-politicas/metas-politicas.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -20,12 +21,13 @@ export const routes: Routes = [
       { path: 'catalogos', component: CatalogsComponent },
       { path: 'ejes', component: EjesComponent },
       { path: 'objetivos', component: ObjetivosComponent },
-       { path: 'politicas', component: PoliticasComponent },
-       { path: 'metas', component: MetasComponent },
-       {
-    path: 'mantenedores',
-    component: MantenedoresComponent
-  }
+      // { path: 'politicas', component: PoliticasComponent },
+      // { path: 'metas', component: MetasComponent },
+      { path: 'metas-politicas', component: MetasPoliticasComponent },
+      {
+        path: 'mantenedores',
+        component: MantenedoresComponent,
+      },
     ],
   },
 ];

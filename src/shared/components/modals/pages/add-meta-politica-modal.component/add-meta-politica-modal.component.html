@@ -1,0 +1,50 @@
+<!-- add-meta-politica-modal.component.html -->
+<div
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  *ngIf="visible"
+>
+  <div class="bg-white w-full max-w-md p-6 rounded-xl shadow space-y-4">
+    <h2 class="text-xl font-bold text-blue-800">
+      {{ isEditing ? 'Editar' : 'Agregar' }} {{ tipo === 'meta' ? 'Meta' : 'Política' }}
+    </h2>
+
+    <label class="block text-sm font-semibold">Objetivo</label>
+    <select
+      [(ngModel)]="form.objetivoId"
+      class="w-full border border-gray-300 rounded-lg p-2"
+    >
+      <option *ngFor="let obj of objetivos" [value]="obj.objPnId">
+        {{ obj.nombre }}
+      </option>
+    </select>
+
+    <label class="block text-sm font-semibold">Nombre</label>
+    <input
+      type="text"
+      [(ngModel)]="form.nombre"
+      class="w-full border border-gray-300 rounded-lg p-2"
+    />
+
+    <label class="block text-sm font-semibold">Descripción</label>
+    <textarea
+      rows="3"
+      [(ngModel)]="form.descripcion"
+      class="w-full border border-gray-300 rounded-lg p-2"
+    ></textarea>
+
+    <div class="flex justify-end gap-2 pt-4">
+      <button
+        class="bg-gray-200 text-gray-800 px-4 py-2 rounded"
+        (click)="cancelar()"
+      >
+        Cancelar
+      </button>
+      <button
+        class="bg-blue-800 text-white px-4 py-2 rounded"
+        (click)="guardar()"
+      >
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
