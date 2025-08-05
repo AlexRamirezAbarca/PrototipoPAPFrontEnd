@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LoaderComponent } from '../../../../../../shared/components/loader/pages/loader.component';
 import { ConfirmModalComponent } from '../../../../../../shared/components/modals/pages/confirm-modal/confirm-modal.component';
 import { CreateMetaPnRequest, MetaPn } from '../../../../models/meta-pn.model';
@@ -18,10 +18,10 @@ import { MetaPnService } from '../../services/meta-pn.service';
     ConfirmModalComponent,
   ],
   templateUrl: './metas.component.html',
-  styleUrl: './metas.component.css'
+  styleUrl: './metas.component.css',
 })
 export class MetasComponent implements OnInit {
-   metas: MetaPn[] = [];
+  metas: MetaPn[] = [];
   currentPage = 1;
   pageSize = 10;
   totalPages = 1;
@@ -39,14 +39,29 @@ export class MetasComponent implements OnInit {
   showConfirmModal = false;
   metaToDelete: MetaPn | null = null;
 
+  ejeNombre: string = '';
+  objetivoNombre: string = '';
+  objetivoId: number = 0;
+
   constructor(
     private metaService: MetaPnService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadMetas();
+    this.objetivoId = Number(this.route.snapshot.paramMap.get('id'));
+
+  const navigation = this.router.getCurrentNavigation();
+  const state = navigation?.extras?.state || history.state;
+
+  this.ejeNombre = state?.['ejeNombre'] || '';
+  this.objetivoNombre = state?.['objetivoNombre'] || '';
+
+  console.log('Objetivo:', this.objetivoNombre);
+  console.log('Eje:', this.ejeNombre);
   }
 
   goBack(): void {
@@ -191,4 +206,3 @@ export class MetasComponent implements OnInit {
     });
   }
 }
-

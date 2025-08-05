@@ -73,7 +73,7 @@ export class MetasPoliticasComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/catalogos']);
+    this.router.navigate(['/plan-nacional']);
   }
 
  cargarRelaciones(): void {
