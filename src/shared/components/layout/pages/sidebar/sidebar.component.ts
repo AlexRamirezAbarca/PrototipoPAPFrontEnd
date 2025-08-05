@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+
 
 @Component({
   standalone: true,
@@ -10,14 +11,22 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidebar.component.css'],
 })
 export class SidebarComponent {
- isSidebarOpen = false;
-  isMantenimientosOpen = false; // <- NUEVO
+  isSidebarOpen = false;
+  isMantenimientosOpen = false;
+  isPlanDesarrolloOpen = false;
+
+  constructor(private router : Router){}
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  toggleMantenimientos(): void {
+  toggleMantenimientos() {
     this.isMantenimientosOpen = !this.isMantenimientosOpen;
+    this.router.navigate(['/catalogos']);
+  }
+
+  togglePlanDesarrollo() {
+    this.isPlanDesarrolloOpen = !this.isPlanDesarrolloOpen;
   }
 }

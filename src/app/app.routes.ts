@@ -9,6 +9,7 @@ import { ObjetivosComponent } from './home/pages/catalogs/planNacional/objetivos
 // import { MetasComponent } from './home/pages/catalogs/planNacional/metas/metas.component';
 import { MantenedoresComponent } from './home/pages/catalogs/planNacional/mantenedores/mantenedores.component';
 import { MetasPoliticasComponent } from './home/pages/catalogs/planNacional/metas-politicas/metas-politicas.component';
+import { PlanNacionalComponent } from './home/pages/catalogs/planNacional/planNacional/planNacional.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,7 +22,7 @@ export const routes: Routes = [
       { path: 'catalogos', component: CatalogsComponent },
       { path: 'ejes', component: EjesComponent },
       { path: 'objetivos', component: ObjetivosComponent },
-      // { path: 'politicas', component: PoliticasComponent },
+      { path: 'plan-nacional', component: PlanNacionalComponent },
       // { path: 'metas', component: MetasComponent },
       { path: 'metas-politicas', component: MetasPoliticasComponent },
       {

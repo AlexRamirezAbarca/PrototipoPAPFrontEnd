@@ -47,37 +47,82 @@
               ></i>
               <span class="text-lg">Mantenimientos</span>
             </div>
-
           </button>
+
 
           <!-- Submenú -->
           <ul
             *ngIf="isMantenimientosOpen"
-            class="ml-10 mt-1 space-y-1 text-sm text-white"
+            class="ml-6 mt-2 space-y-2 text-sm text-white"
           >
+            <!-- PLAN NACIONAL DE DESARROLLO (Toggle) -->
             <li>
-              <a
-                routerLink="/ejes"
-                routerLinkActive="text-pink-400 font-semibold"
-                class="block py-1 hover:underline"
-                >› Ejes</a
+              <button
+                (click)="togglePlanDesarrollo()"
+                class="w-full text-left py-2 px-1 flex items-center justify-between hover:underline hover:text-pink-300 transition"
               >
+                <span class="flex items-center gap-1">
+                  <!-- <span class="text-white">›</span> -->
+                  <span>› Plan Nacional de Desarrollo</span>
+                </span>
+                <!-- <i
+                  class="fas"
+                  [ngClass]="{
+                    'fa-chevron-down': isPlanDesarrolloOpen,
+                    'fa-chevron-right': !isPlanDesarrolloOpen
+                  }"
+                ></i> -->
+              </button>
             </li>
+
+            <!-- SUBITEMS: Ejes / Objetivos / Metas y Políticas -->
+            <ul *ngIf="isPlanDesarrolloOpen" class="ml-5 space-y-1">
+              <li>
+                <a
+                  routerLink="/ejes"
+                  routerLinkActive="text-pink-400 font-semibold"
+                  class="block py-1 hover:underline"
+                  >› Ejes</a
+                >
+              </li>
+              <li>
+                <a
+                  routerLink="/objetivos"
+                  routerLinkActive="text-pink-400 font-semibold"
+                  class="block py-1 hover:underline"
+                  >› Objetivos</a
+                >
+              </li>
+              <li>
+                <a
+                  routerLink="/metas-politicas"
+                  routerLinkActive="text-pink-400 font-semibold"
+                  class="block py-1 hover:underline"
+                  >› Metas y Políticas</a
+                >
+              </li>
+            </ul>
+
+            <!-- PEDI -->
             <li>
               <a
-                routerLink="/objetivos"
+                routerLink="/pedi"
                 routerLinkActive="text-pink-400 font-semibold"
-                class="block py-1 hover:underline"
-                >› Objetivos</a
+                class="block py-2 hover:underline"
               >
+                › PEDI
+              </a>
             </li>
+
+            <!-- ESTRUCTURA PROGRAMÁTICA -->
             <li>
               <a
-                routerLink="/metas-politicas"
+                routerLink="/estructura-programatica"
                 routerLinkActive="text-pink-400 font-semibold"
-                class="block py-1 hover:underline"
-                >› Metas y Políticas</a
+                class="block py-2 hover:underline"
               >
+                › Estructura Programática
+              </a>
             </li>
           </ul>
         </li>

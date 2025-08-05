@@ -185,7 +185,7 @@ totalPages = 1;
 
   // Navegación
   goBack(): void {
-    this.router.navigate(['/catalogos']);
+    this.router.navigate(['/plan-nacional']);
   }
 
   expandirRelacion(relacion: EjeObjetivoRelacion): any[] {

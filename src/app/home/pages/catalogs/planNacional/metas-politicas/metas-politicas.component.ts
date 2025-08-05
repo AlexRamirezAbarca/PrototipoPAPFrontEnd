@@ -76,21 +76,40 @@ export class MetasPoliticasComponent implements OnInit {
     this.router.navigate(['/catalogos']);
   }
 
-  cargarRelaciones(): void {
-    this.loading = true;
+ cargarRelaciones(): void {
+  this.loading = true;
 
-    this.relacionesService.getRelacionesPaginadas(1, 100).subscribe({
-      next: (res) => {
-        this.relacionesAgrupadas = this.agruparPorEje(res.data);
-      },
-      error: (err) => {
-        console.error('Error al cargar relaciones:', err);
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
-  }
+  this.relacionesService.getRelacionesPaginadas(1, 100).subscribe({
+    next: (res) => {
+      this.relacionesAgrupadas = this.agruparPorEje(res.data);
+
+      // Extrae todos los objetivos y guárdalos en la lista
+      const allObjetivos = res.data.map(r => r.objetivo);
+      const objetivosUnicosMap = new Map<number, ObjetivoExtendido>();
+
+      allObjetivos.forEach(obj => {
+        if (!objetivosUnicosMap.has(obj.objPnId)) {
+          objetivosUnicosMap.set(obj.objPnId, {
+            objPnId: obj.objPnId,
+            nombre: obj.nombre,
+            descripcion: obj.descripcion,
+            estado : "",
+            metas: obj.metas,
+            politicas: obj.politicas,
+          });
+        }
+      });
+
+      this.objetivosList = Array.from(objetivosUnicosMap.values());
+    },
+    error: (err) => {
+      console.error('Error al cargar relaciones:', err);
+    },
+    complete: () => {
+      this.loading = false;
+    },
+  });
+}
 
   agruparPorEje(data: EjeObjetivoRelacion[]): EjeAgrupado[] {
     const agrupadoMap = new Map<number, EjeAgrupado>();

@@ -65,7 +65,7 @@ export class ObjetivosComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/catalogos']);
+    this.router.navigate(['/plan-nacional']);
   }
 
   // loadObjetivos(): void {

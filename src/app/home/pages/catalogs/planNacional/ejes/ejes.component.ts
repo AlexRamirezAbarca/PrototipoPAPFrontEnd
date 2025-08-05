@@ -112,7 +112,7 @@ export class EjesComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/catalogos']);
+    this.router.navigate(['/plan-nacional']);
   }
 
   eliminarEje(eje: EjePn): void {

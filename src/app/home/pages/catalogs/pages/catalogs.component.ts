@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
 // catalogs.component.ts → se mantendrá su selector pero lo renombras a Mantenimiento visualmente
 export class CatalogsComponent {
   seccionesPrincipales = [
-    { nombre: 'Plan Nacional de Desarrollo', enlace: '/pnd', imagen: 'assets/banner.png' },
+    { nombre: 'Plan Nacional de Desarrollo', enlace: '/plan-nacional', imagen: 'assets/banner.png' },
     { nombre: 'Estructura Programática', enlace: '/estructura-programatica', imagen: 'assets/banner.png' },
     { nombre: 'PEDI', enlace: '/pedi', imagen: 'assets/banner.png' }
   ];
