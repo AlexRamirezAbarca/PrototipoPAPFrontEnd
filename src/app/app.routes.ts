@@ -13,6 +13,9 @@ import { PlanNacionalComponent } from './home/pages/catalogs/planNacional/planNa
 import { MetasComponent } from './home/pages/catalogs/planNacional/metas/metas.component';
 import { PoliticaPnService } from './home/pages/catalogs/services/politica-pn.service';
 import { PoliticasComponent } from './home/pages/catalogs/planNacional/politicas/politicas.component';
+import { EstructuraProgramaticaComponent } from './home/pages/catalogs/estructura-programatica/estructuraProgramatica/estructura-programatica.component';
+import { ProgramaInstitucionalComponent } from './home/pages/catalogs/estructura-programatica/programaInstitucional/programa-institucional.component';
+import { ProgramaNacionalComponent } from './home/pages/catalogs/estructura-programatica/programaNacional/programa-nacional.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -39,6 +42,18 @@ export const routes: Routes = [
         path: 'mantenedores',
         component: MantenedoresComponent,
       },
+      {
+        path: 'estructura-programatica',
+        component: EstructuraProgramaticaComponent,
+      },
+      {
+        path : "programa-institucional",
+        component : ProgramaInstitucionalComponent
+      },
+      {
+        path : "programa-nacional",
+        component: ProgramaNacionalComponent
+      }
     ],
   },
 ];

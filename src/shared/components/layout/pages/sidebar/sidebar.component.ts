@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
-
 @Component({
   standalone: true,
   selector: 'app-sidebar',
@@ -14,8 +13,9 @@ export class SidebarComponent {
   isSidebarOpen = false;
   isMantenimientosOpen = false;
   isPlanDesarrolloOpen = false;
+  isEstructuraProgramaticaOpen = false;
 
-  constructor(private router : Router){}
+  constructor(private router: Router) {}
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -28,5 +28,9 @@ export class SidebarComponent {
 
   togglePlanDesarrollo() {
     this.isPlanDesarrolloOpen = !this.isPlanDesarrolloOpen;
+  }
+
+  toggleEstructuraProgramatica() {
+    this.isEstructuraProgramaticaOpen = !this.isEstructuraProgramaticaOpen;
   }
 }

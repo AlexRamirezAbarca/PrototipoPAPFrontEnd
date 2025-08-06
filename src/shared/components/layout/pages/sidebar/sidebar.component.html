@@ -1,6 +1,12 @@
-<aside
-  class="hidden md:flex flex-col justify-between w-64 h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white shadow-xl"
->
+<!-- <aside
+  [ngClass]="{
+    'translate-x-0': isSidebarOpen,
+    '-translate-x-full': !isSidebarOpen
+  }"
+  class="fixed md:relative z-50 top-0 left-0 h-full w-64 bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white shadow-xl transform md:translate-x-0 transition-transform duration-300 ease-in-out"
+> -->
+<aside class="hidden sm:flex flex-col justify-between w-64 min-h-screen max-h-screen overflow-y-auto bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white shadow-xl">
+
   <!-- HEADER RENOVADO -->
   <div class="p-6 flex flex-col items-center">
     <!-- Círculo blanco de fondo -->
@@ -48,7 +54,6 @@
               <span class="text-lg">Mantenimientos</span>
             </div>
           </button>
-
 
           <!-- Submenú -->
           <ul
@@ -114,15 +119,39 @@
               </a>
             </li>
 
-            <!-- ESTRUCTURA PROGRAMÁTICA -->
+            <!-- ESTRUCTURA PROGRAMÁTICA (toggle) -->
             <li>
-              <a
-                routerLink="/estructura-programatica"
-                routerLinkActive="text-pink-400 font-semibold"
-                class="block py-2 hover:underline"
+              <button
+                (click)="toggleEstructuraProgramatica()"
+                class="w-full text-left py-2 px-1 flex items-center justify-between hover:underline hover:text-pink-300 transition"
               >
-                › Estructura Programática
-              </a>
+                <span class="flex items-center gap-1">
+                  <span>› Estructura Programática</span>
+                </span>
+              </button>
+
+              <!-- Subitems: Programa Nacional e Institucional -->
+              <ul
+                *ngIf="isEstructuraProgramaticaOpen"
+                class="ml-5 mt-1 space-y-1 text-sm"
+              >
+                <li>
+                  <a
+                    routerLink="/programa-nacional"
+                    routerLinkActive="text-red-500 font-bold"
+                    class="block hover:underline"
+                    >› Programa Nacional</a
+                  >
+                </li>
+                <li>
+                  <a
+                    routerLink="/programa-institucional"
+                    routerLinkActive="text-pink-400 font-semibold"
+                    class="block hover:underline"
+                    >› Programa Institucional</a
+                  >
+                </li>
+              </ul>
             </li>
           </ul>
         </li>
@@ -210,10 +239,10 @@
   </div>
 </aside>
 
-<!-- Botón de toggle para pantallas pequeñas -->
+<!-- Botón para abrir/cerrar en móviles -->
 <button
   (click)="toggleSidebar()"
-  class="md:hidden fixed bottom-6 right-6 bg-blue-900 text-white p-4 rounded-full shadow-lg hover:bg-blue-800 transition"
+  class="md:hidden fixed bottom-6 right-6 z-50 bg-blue-900 text-white p-4 rounded-full shadow-lg hover:bg-blue-800 transition"
   aria-label="Abrir menú"
 >
   <i class="fas fa-bars text-2xl"></i>
