@@ -6,6 +6,7 @@ import { LoaderComponent } from '../../../../../../shared/components/loader/page
 import { ConfirmModalComponent } from '../../../../../../shared/components/modals/pages/confirm-modal/confirm-modal.component';
 import { CreateMetaPnRequest, MetaPn } from '../../../../models/meta-pn.model';
 import { MetaPnService } from '../../services/meta-pn.service';
+import { ObjetivoMetaService } from '../../services/objetivo-meta.service';
 
 @Component({
   selector: 'app-metas',
@@ -35,7 +36,7 @@ export class MetasComponent implements OnInit {
   isEditing = false;
   selectedMetaId: number | null = null;
 
-  loading = false;
+  // loading = false;
   showConfirmModal = false;
   metaToDelete: MetaPn | null = null;
 
@@ -43,11 +44,17 @@ export class MetasComponent implements OnInit {
   objetivoNombre: string = '';
   objetivoId: number = 0;
 
+  nuevaMeta = { nombre: '', descripcion: '' };
+  listaMetas: { id?: number; nombre: string; descripcion: string }[] = [];
+
+  loading = false;
+
   constructor(
     private metaService: MetaPnService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private objetivoMeta : ObjetivoMetaService
   ) {}
 
   ngOnInit(): void {
@@ -65,8 +72,69 @@ export class MetasComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/catalogos']);
+    this.router.navigate(['/metas-politicas']);
   }
+
+  // Agregar meta a la lista temporal
+  agregarMeta(): void {
+    if (!this.nuevaMeta.nombre.trim()) return;
+
+    const nueva = {
+      id: this.listaMetas.length + 1,
+      nombre: this.nuevaMeta.nombre.trim(),
+      descripcion: this.nuevaMeta.descripcion.trim()
+    };
+
+    this.listaMetas.push(nueva);
+    this.nuevaMeta = { nombre: '', descripcion: '' };
+  }
+
+  // Editar meta en lista
+  editarMeta(meta: any): void {
+    console.log('Editar:', meta);
+    // Aquí podrías implementar un modo edición similar al de políticas
+  }
+
+  // Eliminar meta de lista
+  eliminarMeta(meta: any): void {
+    this.listaMetas = this.listaMetas.filter(m => m !== meta);
+  }
+
+  // Guardar lote con relación
+  guardarTodo(): void {
+    if (this.listaMetas.length === 0) {
+      alert('Debe agregar al menos una meta antes de guardar.');
+      return;
+    }
+
+    const payload = {
+      objetivoId: this.objetivoId,
+      metas: this.listaMetas.map(m => ({
+        nombre: m.nombre,
+        descripcion: m.descripcion
+      }))
+    };
+
+    this.loading = true;
+    this.cdr.detectChanges();
+
+    this.objetivoMeta.crearMetasConRelacion(payload).subscribe({
+      next: (response) => {
+        alert('Metas y relaciones guardadas correctamente.');
+        this.listaMetas = [];
+        this.router.navigate(['/metas-politicas']);
+      },
+      error: (err) => {
+        console.error('Error al guardar metas:', err);
+        alert('Ocurrió un error al guardar las metas.');
+      },
+      complete: () => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
 
   loadMetas(): void {
     this.loading = true;
@@ -117,20 +185,20 @@ export class MetasComponent implements OnInit {
     this.newMeta = { nombre: '', descripcion: '' };
   }
 
-  editarMeta(meta: MetaPn): void {
-    this.selectedMetaId = meta.metaPnId;
-    this.newMeta = {
-      nombre: meta.nombre,
-      descripcion: meta.descripcion,
-    };
-    this.isEditing = true;
-    this.showModal = true;
-  }
+  // editarMeta(meta: MetaPn): void {
+  //   this.selectedMetaId = meta.metaPnId;
+  //   this.newMeta = {
+  //     nombre: meta.nombre,
+  //     descripcion: meta.descripcion,
+  //   };
+  //   this.isEditing = true;
+  //   this.showModal = true;
+  // }
 
-  eliminarMeta(meta: MetaPn): void {
-    this.metaToDelete = meta;
-    this.showConfirmModal = true;
-  }
+  // eliminarMeta(meta: MetaPn): void {
+  //   this.metaToDelete = meta;
+  //   this.showConfirmModal = true;
+  // }
 
   confirmDelete(): void {
     if (!this.metaToDelete) return;

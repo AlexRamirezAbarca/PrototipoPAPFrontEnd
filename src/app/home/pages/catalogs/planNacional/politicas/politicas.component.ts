@@ -9,6 +9,7 @@ import {
   PoliticaPn,
 } from '../../../../models/politca-pn.models';
 import { PoliticaPnService } from '../../services/politica-pn.service';
+import { ObjetivoPoliticaService } from '../../services/objetivo-politica.service';
 
 @Component({
   selector: 'app-politicas',
@@ -57,7 +58,8 @@ listaPoliticas: { id?: number, nombre: string, descripcion: string }[] = [];
     private politicaService: PoliticaPnService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private objetivoPolitica : ObjetivoPoliticaService
   ) {}
 
   ngOnInit(): void {
@@ -97,9 +99,39 @@ eliminarPolitica(politica: any): void {
 }
 
 guardarTodo(): void {
-  console.log('Guardar políticas:', this.listaPoliticas);
-  // Aquí irá tu lógica real de guardado, probablemente llamando a un servicio.
+  if (this.listaPoliticas.length === 0) {
+    alert('Debe agregar al menos una política antes de guardar.');
+    return;
+  }
+
+  const payload = {
+    objetivoId: this.objetivoId,
+    politicas: this.listaPoliticas.map(p => ({
+      nombre: p.nombre,
+      descripcion: p.descripcion
+    }))
+  };
+
+  this.loading = true;
+  this.cdr.detectChanges();
+
+  this.objetivoPolitica.crearPoliticasConRelacion(payload).subscribe({
+    next: (response) => {
+      alert('Políticas y relaciones guardadas correctamente.');
+      this.listaPoliticas = [];
+      this.router.navigate(['/metas-politicas']);
+    },
+    error: (err) => {
+      console.error('Error al guardar políticas:', err);
+      alert('Ocurrió un error al guardar las políticas.');
+    },
+    complete: () => {
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
 }
+
 
   goBack(): void {
     this.router.navigate(['/metas-politicas']);

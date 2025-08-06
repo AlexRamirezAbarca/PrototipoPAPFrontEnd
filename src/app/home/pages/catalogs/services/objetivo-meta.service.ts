@@ -11,4 +11,12 @@ export class ObjetivoMetaService {
   crearRelacion(payload: { obj_pn_id: number; meta_pn_id: number }): Observable<any> {
     return this.http.post(this.apiUrl, payload);
   }
+
+   crearMetasConRelacion(payload: {
+    objetivoId: number;
+    metas: { nombre: string; descripcion?: string }[];
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/lote-con-relacion`, payload);
+  }
+
 }

@@ -11,4 +11,14 @@ export class ObjetivoPoliticaService {
   crearRelacion(payload: { ObjPnId: number; PoliticaPnId: number }): Observable<any> {
     return this.http.post(this.apiUrl, payload);
   }
+
+  crearPoliticasConRelacion(payload: {
+    objetivoId: number;
+    politicas: { nombre: string; descripcion?: string }[];
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/lote-con-relacion`, payload);
+  }
+
+
+
 }
